@@ -102,7 +102,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
 - Used `psexec.py` from Impacket with to remotely authenticate via admin creds
 - Retrieved root flag
 
-![Remote Access via Psexec](./screenshots/remote%20access%20via%20psexec.png)
+![Remote Access via Psexec](./screenshots/remote%20access%20via%20psexec.png)  
 ![Admin Flag](./screenshots/admin%20flag.png)
 
 
