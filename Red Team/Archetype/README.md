@@ -114,7 +114,8 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
    **🛡️Detection:**  
            - <strong> IDS/IPS </strong> alerts for port scanning (Snort, Suricata)  
            - <strong> Firewall </strong> logs (multiple TCP SYNs from a single source). check if connection attempts were blocked or allowed  
-           - **EDR** (i.e Crowdstrike) if nmap port scans are executed locally  <br>
+           - **EDR** (i.e Crowdstrike) if nmap port scans are executed locally  
+<br>
     **🔎Investigation:**  
            - Look for a **single source IP** making many connection attempts to different ports on the same host (vertical scan) or **the same port being scanned across many IPs** (horizontal scan)  
            - Pay attention to timing — scans often happen in **bursts within seconds**, which is a strong indicator of automation  
@@ -123,11 +124,13 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
 <br>
 
 **2. SMB Enumeration and File Exfiltration**   
-**📌Attack Step:** Accessing an open SMB share (\\target\backups), pulling prod.dtsconfig  <br>
+**📌Attack Step:** Accessing an open SMB share (\\target\backups), pulling prod.dtsconfig  
+<br>
    **🛡️Detection:**  
            - Event ID 5140: “A network share object was accessed." A user (or process) accessed a share (e.g., \\host\backups), not necessarily a specific file.   
            - Event ID 5145: “A network share object was checked to see whether client can access.”  This is file-level access, showing what file/folder was requested and with what access rights (read, write, etc.)  
            - SMB logon activity (4624 Type 3 from attacker IP)  
+<br>
    **🔎Investigation:**  
            - Correlate SMB activity with logon activity and build a timeline. When did the activity start? which account was used? Were there any failed logons? which source IPs were involved? Which files/folders were accessed successfully?  
           - Unexpected logons to admin shares like `ADMIN$, C$`  
@@ -136,16 +139,19 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
 
 **3. Credential Access**  
 **📌Attack Step:** Extracting creds in plaintext from prod.dtsconfig  
+<br>
     **🛡️Detection:**  
           -  EDRs can detect this activity via event correlation (i.e. file accessed, credential reuse, enabling xp_cmdshell, downloading netcat, etc)  
           -  If deployed, file integrity monitoring can utilized to detect access to critical files  
           -  SIEM alerts can set up to detect access to files with extensions of .cfg/.configuration           
+<br>
     **🔎Investigation:**  
           - Check Windows Security Logs (Event ID 4663) for file access events if auditing is enabled  
           - check Sysmon Event ID 1 to see command-line log and determine if the attacker viewed files via via `type`, `cat`, or `more`  
 
 **4. MSSQL Login (Initial Access):**  
 **📌Attack Step:** Logging in to MSSQL with `sql_svc` account using `mssqlclient.py`  
+<br>
     **🛡️Detection:**  
            -  Enable MSSQL audit logs to record successful logons, permission changes, and executed commands  
            -  Sysmon event ID 3 to detect inbound and outbound traffic to port 1433 (MSSQL port) and connections from a non-domain joined  
