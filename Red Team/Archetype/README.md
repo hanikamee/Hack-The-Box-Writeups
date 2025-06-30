@@ -150,10 +150,10 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
            -  Sysmon event ID 3 to detect inbound and outbound traffic to port 1433 (MSSQL port) and connections from a non-domain joined  
            -  If the source IP is not one of those trusted machines (jump box)  
     **🔎Investigation:**
-           - Determine a baseline: what systems usually authenticate using `sql_svc`? 
-           - Were there any failed login attempts before the successful logon (brute forcing sign)?
-           - Was this logon from a suspicious host?
-           - What activities transpired post logon? Was "xp_cmdshell" enabled to executed commands? Were any suspicious queries or commands executed?
+           - Determine a baseline: what systems usually authenticate using `sql_svc`?   
+           - Were there any failed login attempts before the successful logon (brute forcing sign)?  
+           - Was this logon from a suspicious host?  
+           - What activities transpired post logon? Was "xp_cmdshell" enabled to executed commands? Were any suspicious queries or commands executed?  
 
 **5. Command Execution via xp_cmdshell:**  
 **📌Attack Step:**  Enabling xp_cmdshell, then using it to run PowerShell and install netcat.  
