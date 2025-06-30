@@ -1,7 +1,14 @@
-# Overview
-This lab simulates a misconfigured MSSQL server accessible over the network, allowing attackers to gain initial access, execute OS-level commands, drop tools on target, set up a reverse shell, obtain elevated access, and retrieve flags.
+# 🧠 Overview
+This lab simulates a misconfigured MSSQL server accessible over the network, allowing attackers to :
 
-## MITRE ATT&CK Mapping
+- 🟢 Gain initial access
+- 🛠 Execute OS-level commands
+- 📦 Drop tools on target
+- 📡 Set up a reverse shell 
+- 🔐 Obtain elevated access
+- 🧾 Retrieve flags.
+
+## 🧭 MITRE ATT&CK Mapping
 - 🛂 Initial Access
     - [T1078] Valid Accounts
 - 🖥️ Execution
