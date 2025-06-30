@@ -207,7 +207,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
     - EDR tools, such as CrowdStrike will catch read actions  
     - **Detecting read access for history files is difficult because it is using a LOLBIN (powershell) and is considered normal behavior**  
 <br>
-  **🔎Investigation:**
+  **🔎Investigation:**  
     - Look for unusual access and correlate with other events to detect nefarious activity  
 <br>
 **9. Objective Completed**  
