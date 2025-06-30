@@ -156,6 +156,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
            -  Enable MSSQL audit logs to record successful logons, permission changes, and executed commands  
            -  Sysmon event ID 3 to detect inbound and outbound traffic to port 1433 (MSSQL port) and connections from a non-domain joined  
            -  If the source IP is not one of those trusted machines (jump box)  
+<br>
     **🔎Investigation:**
            - Determine a baseline: what systems usually authenticate using `sql_svc`?   
            - Were there any failed login attempts before the successful logon (brute forcing sign)?  
@@ -164,10 +165,12 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
 
 **5. Command Execution via xp_cmdshell:**  
 **📌Attack Step:**  Enabling xp_cmdshell, then using it to run PowerShell and install netcat.  
+<br>
  **🛡️Detection:**  
     - **Event ID 4688 (new process creation)**: Execution of powershell. exe, cmd.exe, or nc64.exe   
     - Review audit logs (MSSql logs) if xp_cmdshell is enabled  
     - Sysmon 1 (process creation) and sysmon event ID 11 (file creation)  
+<br>
  **🔎Investigation:**  
     - Hunt for `xp_cmdshell` use   
     - hunt for powershell use and investigate child processes (i.e nc64.exe)    
@@ -175,34 +178,42 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
 
 **6. Tool Ingress: NetCat**  
 **📌Attack Step:** Downloading nc64.exe via PowerShell from attacker HTTP server  
+<br>
   **🛡️Detection:**  
     - Sysmon 3: Network connetions from target to attacker IP over port 80  
     - Sysmon 11: file creation events (nc64.exe drop)  
+<br>
   **🔎Investigation:**  
     - Trace outbound HTTP requests to suspicious hosts  
     - look for unknown binaries being dropped   
 
 **7. Reverse Shell Established:**  
 **📌Attack Step:** Connecting back to the attacker's listener via nc64.exe  
+<br>
   **🛡️Detection:**  
     - Sysmon 3: Outbound connection to uncommon IP  
     - Firewall logs: outbound connections to port 443 and uncommon IP  
     - Process tree: cmd.exe spawned from an unusual parent process and talking to C2/external IP  
+<br>
   **🔎Investigation:**   
     - Look for long-running cmd.exe processes  
     - Investigate command line arguments
 
 **8. Privilege Escalation | Administrator Access**    
 **📌Attack Step:** Reading PowerShell history file to extract administrator password  
+<br>
   **🛡️Detection:**  
     - EDR tools, such as CrowdStrike will catch read actions  
     - **Detecting read access for history files is difficult because it is using a LOLBIN (powershell) and is considered normal behavior**  
+<br>
   **🔎Investigation:**
     - Look for unusual access and correlate with other events to detect nefarious activity  
 
 **9. Objective Completed**  
 **📌Attack Step:** Reading user.txt and root.txt    
+<br>
   **🛡️Detection:**
     - Contextual correlation/detection    
+<br>  
   **🔎Investigation:**
     - Contextual correlation: Correlate with time of psexec session
