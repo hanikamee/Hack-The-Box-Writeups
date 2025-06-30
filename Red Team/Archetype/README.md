@@ -109,7 +109,8 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
 #### 🔍 Investigation (Blue Team)
 
 **1. Initial Recon / Port Scanning**    
-**📌Attack Step:** nmap scan of open ports  <br>
+**📌Attack Step:** nmap scan of open ports  
+<br>
    **🛡️Detection:**  
            - <strong> IDS/IPS </strong> alerts for port scanning (Snort, Suricata)  
            - <strong> Firewall </strong> logs (multiple TCP SYNs from a single source). check if connection attempts were blocked or allowed  
