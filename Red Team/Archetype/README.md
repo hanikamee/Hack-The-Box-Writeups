@@ -178,11 +178,11 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
 **7. Reverse Shell Established:**  
 **📌Attack Step:** Connecting back to the attacker's listener via nc64.exe  
   **🛡️Detection:**
-    - Sysmon 3: Outbound connection to uncommon IP
-    - Firewall logs: outbound connections to port 443 and uncommon IP
+    - Sysmon 3: Outbound connection to uncommon IP  
+    - Firewall logs: outbound connections to port 443 and uncommon IP  
     - Process tree: cmd.exe spawned from an unusual parent process and talking to C2/external IP  
   **🔎Investigation:**   
-    - Look for long-running cmd.exe processes
+    - Look for long-running cmd.exe processes  
     - Investigate command line arguments
 
 **8. Privilege Escalation | Administrator Access**    
