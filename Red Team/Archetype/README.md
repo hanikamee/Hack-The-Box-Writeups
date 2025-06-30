@@ -144,11 +144,11 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
           - check Sysmon Event ID 1 to see command-line log and determine if the attacker viewed files via via `type`, `cat`, or `more`  
 
 **4. MSSQL Login (Initial Access):**  
-**📌Attack Step:** Logging in to MSSQL with `sql_svc` account using `mssqlclient.py`
-    **🛡️Detection:**
-           -  Enable MSSQL audit logs to record successful logons, permission changes, and executed commands
-           -  Sysmon event ID 3 to detect inbound and outbound traffic to port 1433 (MSSQL port) and connections from a non-domain joined
-           -  If the source IP is not one of those trusted machines (jump box)
+**📌Attack Step:** Logging in to MSSQL with `sql_svc` account using `mssqlclient.py`  
+    **🛡️Detection:**  
+           -  Enable MSSQL audit logs to record successful logons, permission changes, and executed commands  
+           -  Sysmon event ID 3 to detect inbound and outbound traffic to port 1433 (MSSQL port) and connections from a non-domain joined  
+           -  If the source IP is not one of those trusted machines (jump box)  
     **🔎Investigation:**
            - Determine a baseline: what systems usually authenticate using `sql_svc`? 
            - Were there any failed login attempts before the successful logon (brute forcing sign)?
@@ -156,15 +156,15 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
            - What activities transpired post logon? Was "xp_cmdshell" enabled to executed commands? Were any suspicious queries or commands executed?
 
 **5. Command Execution via xp_cmdshell:**  
-**📌Attack Step:**  Enabling xp_cmdshell, then using it to run PowerShell and install netcat.
- **🛡️Detection:** 
-    - **Event ID 4688 (new process creation)**: Execution of powershell. exe, cmd.exe, or nc64.exe 
-    - Review audit logs (MSSql logs) if xp_cmdshell is enabled
-    - Sysmon 1 (process creation) and sysmon event ID 11 (file creation)
+**📌Attack Step:**  Enabling xp_cmdshell, then using it to run PowerShell and install netcat.  
+ **🛡️Detection:**  
+    - **Event ID 4688 (new process creation)**: Execution of powershell. exe, cmd.exe, or nc64.exe   
+    - Review audit logs (MSSql logs) if xp_cmdshell is enabled  
+    - Sysmon 1 (process creation) and sysmon event ID 11 (file creation)  
  **🔎Investigation:**  
-    - Hunt for `xp_cmdshell` use  
-    - hunt for powershell use and investigate child processes (i.e nc64.exe)  
-    - Look for `cmd.exe` or `powershell.exe` execution from unusual parent processes  
+    - Hunt for `xp_cmdshell` use   
+    - hunt for powershell use and investigate child processes (i.e nc64.exe)    
+    - Look for `cmd.exe` or `powershell.exe` execution from unusual parent processes    
 
 **6. Tool Ingress: NetCat**  
 **📌Attack Step:** Downloading nc64.exe via PowerShell from attacker HTTP server  
