@@ -109,9 +109,9 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
 #### 🔍 Investigation (Blue Team)
 
 **1. Initial Recon / Port Scanning**    
-**📌Attack Step:** nmap scan of open ports 
+**📌Attack Step:** nmap scan of open ports
 <br>
-    **🛡️Detection:**
+   **🛡️Detection:**
            - <strong> IDS/IPS </strong> alerts for port scanning (Snort, Suricata)
            - <strong> Firewall </strong> logs (multiple TCP SYNs from a single source). check if connection attempts were blocked or allowed
            - **EDR** (i.e Crowdstrike) if nmap port scans are executed locally <br>
@@ -122,7 +122,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
            - On the firewall, **check if connection attempts were blocked or allowed**
 <br>
 
-**2. SMB Enumeration and File Exfiltration**
+**2. SMB Enumeration and File Exfiltration**  
 **📌Attack Step:** Accessing an open SMB share (\\target\backups), pulling prod.dtsconfig <br>
    **🛡️Detection:**
            - Event ID 5140: “A network share object was accessed." A user (or process) accessed a share (e.g., \\host\backups), not necessarily a specific file. 
