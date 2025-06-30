@@ -177,7 +177,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
 
 **7. Reverse Shell Established:**  
 **📌Attack Step:** Connecting back to the attacker's listener via nc64.exe  
-  **🛡️Detection:**
+  **🛡️Detection:**  
     - Sysmon 3: Outbound connection to uncommon IP  
     - Firewall logs: outbound connections to port 443 and uncommon IP  
     - Process tree: cmd.exe spawned from an unusual parent process and talking to C2/external IP  
@@ -187,8 +187,8 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
 
 **8. Privilege Escalation | Administrator Access**    
 **📌Attack Step:** Reading PowerShell history file to extract administrator password  
-  **🛡️Detection:**
-    - EDR tools, such as CrowdStrike will catch read actions
+  **🛡️Detection:**  
+    - EDR tools, such as CrowdStrike will catch read actions  
     - **Detecting read access for history files is difficult because it is using a LOLBIN (powershell) and is considered normal behavior**  
   **🔎Investigation:**
     - Look for unusual access and correlate with other events to detect nefarious activity  
