@@ -161,18 +161,18 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
     - **Event ID 4688 (new process creation)**: Execution of powershell. exe, cmd.exe, or nc64.exe 
     - Review audit logs (MSSql logs) if xp_cmdshell is enabled
     - Sysmon 1 (process creation) and sysmon event ID 11 (file creation)
- **🔎Investigation:**
-    - Hunt for `xp_cmdshell` use
-    - hunt for powershell use and investigate child processes (i.e nc64.exe)
-    - Look for `cmd.exe` or `powershell.exe` execution from unusual parent processes 
+ **🔎Investigation:**  
+    - Hunt for `xp_cmdshell` use  
+    - hunt for powershell use and investigate child processes (i.e nc64.exe)  
+    - Look for `cmd.exe` or `powershell.exe` execution from unusual parent processes  
 
 **6. Tool Ingress: NetCat**  
-**📌Attack Step:** Downloading nc64.exe via PowerShell from attacker HTTP server
-  **🛡️Detection:**
-    - Sysmon 3: Network connetions from target to attacker IP over port 80
-    - Sysmon 11: file creation events (nc64.exe drop)
-  **🔎Investigation:**
-    - Trace outbound HTTP requests to suspicious hosts
+**📌Attack Step:** Downloading nc64.exe via PowerShell from attacker HTTP server  
+  **🛡️Detection:**  
+    - Sysmon 3: Network connetions from target to attacker IP over port 80  
+    - Sysmon 11: file creation events (nc64.exe drop)  
+  **🔎Investigation:**  
+    - Trace outbound HTTP requests to suspicious hosts  
     - look for unknown binaries being dropped   
 
 **7. Reverse Shell Established:**  
