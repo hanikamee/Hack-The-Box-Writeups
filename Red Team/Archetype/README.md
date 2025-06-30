@@ -134,13 +134,13 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
           - A single IP accessing multiple machines (lateral movement pattern)  
 
 **3. Credential Access**  
-**📌Attack Step:** Extracting creds in plaintext from prod.dtsconfig
-    **🛡️Detection:**
-          -  EDRs can detect this activity via event correlation (i.e. file accessed, credential reuse, enabling xp_cmdshell, downloading netcat, etc)
-          -  If deployed, file integrity monitoring can utilized to detect access to critical files
-          -  SIEM alerts can set up to detect access to files with extensions of .cfg/.configuration         
-    **🔎Investigation:**
-          - Check Windows Security Logs (Event ID 4663) for file access events if auditing is enabled
+**📌Attack Step:** Extracting creds in plaintext from prod.dtsconfig  
+    **🛡️Detection:**  
+          -  EDRs can detect this activity via event correlation (i.e. file accessed, credential reuse, enabling xp_cmdshell, downloading netcat, etc)  
+          -  If deployed, file integrity monitoring can utilized to detect access to critical files  
+          -  SIEM alerts can set up to detect access to files with extensions of .cfg/.configuration           
+    **🔎Investigation:**  
+          - Check Windows Security Logs (Event ID 4663) for file access events if auditing is enabled  
           - check Sysmon Event ID 1 to see command-line log and determine if the attacker viewed files via via `type`, `cat`, or `more`  
 
 **4. MSSQL Login (Initial Access):**  
