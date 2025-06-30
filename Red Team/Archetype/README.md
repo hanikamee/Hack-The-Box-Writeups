@@ -109,7 +109,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
 #### 🔍 Investigation (Blue Team)
 
 **1. Initial Recon / Port Scanning**    
-**📌Attack Step:** nmap scan of open ports
+**📌Attack Step:** nmap scan of open ports  
 <br>
    **🛡️Detection:**
            - <strong> IDS/IPS </strong> alerts for port scanning (Snort, Suricata)
@@ -122,7 +122,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
            - On the firewall, **check if connection attempts were blocked or allowed**
 <br>
 
-**2. SMB Enumeration and File Exfiltration**  
+**2. SMB Enumeration and File Exfiltration**   
 **📌Attack Step:** Accessing an open SMB share (\\target\backups), pulling prod.dtsconfig <br>
    **🛡️Detection:**
            - Event ID 5140: “A network share object was accessed." A user (or process) accessed a share (e.g., \\host\backups), not necessarily a specific file. 
@@ -134,7 +134,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
           - SMB access without corresponding interactive logon
           - A single IP accessing multiple machines (lateral movement pattern) <br>
 
-**3. Credential Access**
+**3. Credential Access**  
 **📌Attack Step:** Extracting creds in plaintext from prod.dtsconfig <br>
     **🛡️Detection:**
           -  EDRs can detect this activity via event correlation (i.e. file accessed, credential reuse, enabling xp_cmdshell, downloading netcat, etc)
@@ -144,7 +144,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
           - Check Windows Security Logs (Event ID 4663) for file access events if auditing is enabled
           - check Sysmon Event ID 1 to see command-line log and determine if the attacker viewed files via via `type`, `cat`, or `more` <br>
 
-**4. MSSQL Login (Initial Access):**
+**4. MSSQL Login (Initial Access):**  
 **📌Attack Step:** Logging in to MSSQL with `sql_svc` account using `mssqlclient.py` <br>
     **🛡️Detection:**
            -  Enable MSSQL audit logs to record successful logons, permission changes, and executed commands
@@ -156,7 +156,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
            - Was this logon from a suspicious host?
            - What activities transpired post logon? Was "xp_cmdshell" enabled to executed commands? Were any suspicious queries or commands executed?
 
-**5. Command Execution via xp_cmdshell:**
+**5. Command Execution via xp_cmdshell:**  
 **📌Attack Step:**  Enabling xp_cmdshell, then using it to run PowerShell and install netcat. <br>
  **🛡️Detection:** 
     - **Event ID 4688 (new process creation)**: Execution of powershell. exe, cmd.exe, or nc64.exe 
@@ -167,7 +167,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
     - hunt for powershell use and investigate child processes (i.e nc64.exe)
     - Look for `cmd.exe` or `powershell.exe` execution from unusual parent processes <br>  
 
-**6. Tool Ingress: NetCat**
+**6. Tool Ingress: NetCat**  
 **📌Attack Step:** Downloading nc64.exe via PowerShell from attacker HTTP server <br>
   **🛡️Detection:**
     - Sysmon 3: Network connetions from target to attacker IP over port 80
@@ -176,7 +176,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
     - Trace outbound HTTP requests to suspicious hosts
     - look for unknown binaries being dropped   
 
-**7. Reverse Shell Established:**
+**7. Reverse Shell Established:**  
 **📌Attack Step:** Connecting back to the attacker's listener via nc64.exe <br>
   **🛡️Detection:**
     - Sysmon 3: Outbound connection to uncommon IP
@@ -186,7 +186,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
     - Look for long-running cmd.exe processes
     - Investigate command line arguments
 
-**8. Privilege Escalation | Administrator Access**
+**8. Privilege Escalation | Administrator Access**  
 **📌Attack Step:** Reading PowerShell history file to extract administrator password <br>
   **🛡️Detection:**
     - EDR tools, such as CrowdStrike will catch read actions
@@ -194,7 +194,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
   **🔎Investigation:**
     - Look for unusual access and correlate with other events to detect nefarious activity <br>
 
-**9. Objective Completed**
+**9. Objective Completed**  
 **📌Attack Step:** Reading user.txt and root.txt <br>
   **🛡️Detection:**
     - Contextual correlation/detection <br>
