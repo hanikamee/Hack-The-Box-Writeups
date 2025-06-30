@@ -194,8 +194,8 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
     - Look for unusual access and correlate with other events to detect nefarious activity  
 
 **9. Objective Completed**  
-**📌Attack Step:** Reading user.txt and root.txt  
+**📌Attack Step:** Reading user.txt and root.txt    
   **🛡️Detection:**
-    - Contextual correlation/detection  
+    - Contextual correlation/detection    
   **🔎Investigation:**
     - Contextual correlation: Correlate with time of psexec session
