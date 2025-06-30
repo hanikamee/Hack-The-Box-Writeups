@@ -137,6 +137,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
           - SMB access without corresponding interactive logon  
           - A single IP accessing multiple machines (lateral movement pattern)  
 <br>
+
 **3. Credential Access**  
 **📌Attack Step:** Extracting creds in plaintext from prod.dtsconfig  
 <br>
@@ -157,7 +158,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
            -  Sysmon event ID 3 to detect inbound and outbound traffic to port 1433 (MSSQL port) and connections from a non-domain joined  
            -  If the source IP is not one of those trusted machines (jump box)  
 <br>
-    **🔎Investigation:**
+    **🔎Investigation:**  
            - Determine a baseline: what systems usually authenticate using `sql_svc`?   
            - Were there any failed login attempts before the successful logon (brute forcing sign)?  
            - Was this logon from a suspicious host?  
@@ -197,7 +198,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
 <br>
   **🔎Investigation:**   
     - Look for long-running cmd.exe processes  
-    - Investigate command line arguments
+    - Investigate command line arguments  
 <br>
 **8. Privilege Escalation | Administrator Access**    
 **📌Attack Step:** Reading PowerShell history file to extract administrator password  
