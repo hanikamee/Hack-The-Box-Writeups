@@ -136,7 +136,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
           - Unexpected logons to admin shares like `ADMIN$, C$`  
           - SMB access without corresponding interactive logon  
           - A single IP accessing multiple machines (lateral movement pattern)  
-
+<br>
 **3. Credential Access**  
 **📌Attack Step:** Extracting creds in plaintext from prod.dtsconfig  
 <br>
@@ -148,7 +148,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
     **🔎Investigation:**  
           - Check Windows Security Logs (Event ID 4663) for file access events if auditing is enabled  
           - check Sysmon Event ID 1 to see command-line log and determine if the attacker viewed files via via `type`, `cat`, or `more`  
-
+<br>
 **4. MSSQL Login (Initial Access):**  
 **📌Attack Step:** Logging in to MSSQL with `sql_svc` account using `mssqlclient.py`  
 <br>
@@ -162,7 +162,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
            - Were there any failed login attempts before the successful logon (brute forcing sign)?  
            - Was this logon from a suspicious host?  
            - What activities transpired post logon? Was "xp_cmdshell" enabled to executed commands? Were any suspicious queries or commands executed?  
-
+<br>
 **5. Command Execution via xp_cmdshell:**  
 **📌Attack Step:**  Enabling xp_cmdshell, then using it to run PowerShell and install netcat.  
 <br>
@@ -175,7 +175,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
     - Hunt for `xp_cmdshell` use   
     - hunt for powershell use and investigate child processes (i.e nc64.exe)    
     - Look for `cmd.exe` or `powershell.exe` execution from unusual parent processes    
-
+<br>
 **6. Tool Ingress: NetCat**  
 **📌Attack Step:** Downloading nc64.exe via PowerShell from attacker HTTP server  
 <br>
@@ -186,7 +186,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
   **🔎Investigation:**  
     - Trace outbound HTTP requests to suspicious hosts  
     - look for unknown binaries being dropped   
-
+<br>
 **7. Reverse Shell Established:**  
 **📌Attack Step:** Connecting back to the attacker's listener via nc64.exe  
 <br>
@@ -198,7 +198,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
   **🔎Investigation:**   
     - Look for long-running cmd.exe processes  
     - Investigate command line arguments
-
+<br>
 **8. Privilege Escalation | Administrator Access**    
 **📌Attack Step:** Reading PowerShell history file to extract administrator password  
 <br>
@@ -208,7 +208,7 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
 <br>
   **🔎Investigation:**
     - Look for unusual access and correlate with other events to detect nefarious activity  
-
+<br>
 **9. Objective Completed**  
 **📌Attack Step:** Reading user.txt and root.txt    
 <br>
