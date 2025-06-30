@@ -109,12 +109,11 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
 #### 🔍 Investigation (Blue Team)
 
 **1. Initial Recon / Port Scanning**    
-**📌Attack Step:** nmap scan of open ports  
-<br>
+**📌Attack Step:** nmap scan of open ports
    **🛡️Detection:**
            - <strong> IDS/IPS </strong> alerts for port scanning (Snort, Suricata)
            - <strong> Firewall </strong> logs (multiple TCP SYNs from a single source). check if connection attempts were blocked or allowed
-           - **EDR** (i.e Crowdstrike) if nmap port scans are executed locally <br>
+           - **EDR** (i.e Crowdstrike) if nmap port scans are executed locally
     **🔎Investigation:**
            - Look for a **single source IP** making many connection attempts to different ports on the same host (vertical scan) or **the same port being scanned across many IPs** (horizontal scan)
            - Pay attention to timing — scans often happen in **bursts within seconds**, which is a strong indicator of automation
@@ -123,33 +122,33 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
 <br>
 
 **2. SMB Enumeration and File Exfiltration**   
-**📌Attack Step:** Accessing an open SMB share (\\target\backups), pulling prod.dtsconfig <br>
+**📌Attack Step:** Accessing an open SMB share (\\target\backups), pulling prod.dtsconfig
    **🛡️Detection:**
            - Event ID 5140: “A network share object was accessed." A user (or process) accessed a share (e.g., \\host\backups), not necessarily a specific file. 
            - Event ID 5145: “A network share object was checked to see whether client can access.”  This is file-level access, showing what file/folder was requested and with what access rights (read, write, etc.)
-           - SMB logon activity (4624 Type 3 from attacker IP) <br>
+           - SMB logon activity (4624 Type 3 from attacker IP)
    **🔎Investigation:**
            - Correlate SMB activity with logon activity and build a timeline. When did the activity start? which account was used? Were there any failed logons? which source IPs were involved? Which files/folders were accessed successfully?
           - Unexpected logons to admin shares like `ADMIN$, C$`
           - SMB access without corresponding interactive logon
-          - A single IP accessing multiple machines (lateral movement pattern) <br>
+          - A single IP accessing multiple machines (lateral movement pattern)
 
 **3. Credential Access**  
-**📌Attack Step:** Extracting creds in plaintext from prod.dtsconfig <br>
+**📌Attack Step:** Extracting creds in plaintext from prod.dtsconfig
     **🛡️Detection:**
           -  EDRs can detect this activity via event correlation (i.e. file accessed, credential reuse, enabling xp_cmdshell, downloading netcat, etc)
           -  If deployed, file integrity monitoring can utilized to detect access to critical files
-          -  SIEM alerts can set up to detect access to files with extensions of .cfg/.configuration <br>          
+          -  SIEM alerts can set up to detect access to files with extensions of .cfg/.configuration         
     **🔎Investigation:**
           - Check Windows Security Logs (Event ID 4663) for file access events if auditing is enabled
-          - check Sysmon Event ID 1 to see command-line log and determine if the attacker viewed files via via `type`, `cat`, or `more` <br>
+          - check Sysmon Event ID 1 to see command-line log and determine if the attacker viewed files via via `type`, `cat`, or `more`  
 
 **4. MSSQL Login (Initial Access):**  
-**📌Attack Step:** Logging in to MSSQL with `sql_svc` account using `mssqlclient.py` <br>
+**📌Attack Step:** Logging in to MSSQL with `sql_svc` account using `mssqlclient.py`
     **🛡️Detection:**
            -  Enable MSSQL audit logs to record successful logons, permission changes, and executed commands
            -  Sysmon event ID 3 to detect inbound and outbound traffic to port 1433 (MSSQL port) and connections from a non-domain joined
-           -  If the source IP is not one of those trusted machines (jump box) <br>
+           -  If the source IP is not one of those trusted machines (jump box)
     **🔎Investigation:**
            - Determine a baseline: what systems usually authenticate using `sql_svc`? 
            - Were there any failed login attempts before the successful logon (brute forcing sign)?
@@ -157,21 +156,21 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
            - What activities transpired post logon? Was "xp_cmdshell" enabled to executed commands? Were any suspicious queries or commands executed?
 
 **5. Command Execution via xp_cmdshell:**  
-**📌Attack Step:**  Enabling xp_cmdshell, then using it to run PowerShell and install netcat. <br>
+**📌Attack Step:**  Enabling xp_cmdshell, then using it to run PowerShell and install netcat.
  **🛡️Detection:** 
     - **Event ID 4688 (new process creation)**: Execution of powershell. exe, cmd.exe, or nc64.exe 
     - Review audit logs (MSSql logs) if xp_cmdshell is enabled
-    - Sysmon 1 (process creation) and sysmon event ID 11 (file creation) <br>
+    - Sysmon 1 (process creation) and sysmon event ID 11 (file creation)
  **🔎Investigation:**
     - Hunt for `xp_cmdshell` use
     - hunt for powershell use and investigate child processes (i.e nc64.exe)
-    - Look for `cmd.exe` or `powershell.exe` execution from unusual parent processes <br>  
+    - Look for `cmd.exe` or `powershell.exe` execution from unusual parent processes 
 
 **6. Tool Ingress: NetCat**  
-**📌Attack Step:** Downloading nc64.exe via PowerShell from attacker HTTP server <br>
+**📌Attack Step:** Downloading nc64.exe via PowerShell from attacker HTTP server
   **🛡️Detection:**
     - Sysmon 3: Network connetions from target to attacker IP over port 80
-    - Sysmon 11: file creation events (nc64.exe drop) <br>
+    - Sysmon 11: file creation events (nc64.exe drop)
   **🔎Investigation:**
     - Trace outbound HTTP requests to suspicious hosts
     - look for unknown binaries being dropped   
