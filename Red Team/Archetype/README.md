@@ -109,29 +109,29 @@ Found admin credentials in powershell's command history, ConsoleHost_history.txt
 #### 🔍 Investigation (Blue Team)
 
 **1. Initial Recon / Port Scanning**    
-**📌Attack Step:** nmap scan of open ports
-   **🛡️Detection:**
-           - <strong> IDS/IPS </strong> alerts for port scanning (Snort, Suricata)
-           - <strong> Firewall </strong> logs (multiple TCP SYNs from a single source). check if connection attempts were blocked or allowed
-           - **EDR** (i.e Crowdstrike) if nmap port scans are executed locally
-    **🔎Investigation:**
-           - Look for a **single source IP** making many connection attempts to different ports on the same host (vertical scan) or **the same port being scanned across many IPs** (horizontal scan)
-           - Pay attention to timing — scans often happen in **bursts within seconds**, which is a strong indicator of automation
-           - Review **Sysmon Event ID 3** for outbound scan behavior (if from an internal host)
-           - On the firewall, **check if connection attempts were blocked or allowed**
+**📌Attack Step:** nmap scan of open ports  
+   **🛡️Detection:**  
+           - <strong> IDS/IPS </strong> alerts for port scanning (Snort, Suricata)  
+           - <strong> Firewall </strong> logs (multiple TCP SYNs from a single source). check if connection attempts were blocked or allowed  
+           - **EDR** (i.e Crowdstrike) if nmap port scans are executed locally  
+    **🔎Investigation:**  
+           - Look for a **single source IP** making many connection attempts to different ports on the same host (vertical scan) or **the same port being scanned across many IPs** (horizontal scan)  
+           - Pay attention to timing — scans often happen in **bursts within seconds**, which is a strong indicator of automation  
+           - Review **Sysmon Event ID 3** for outbound scan behavior (if from an internal host)  
+           - On the firewall, **check if connection attempts were blocked or allowed**  
 <br>
 
 **2. SMB Enumeration and File Exfiltration**   
-**📌Attack Step:** Accessing an open SMB share (\\target\backups), pulling prod.dtsconfig
-   **🛡️Detection:**
-           - Event ID 5140: “A network share object was accessed." A user (or process) accessed a share (e.g., \\host\backups), not necessarily a specific file. 
-           - Event ID 5145: “A network share object was checked to see whether client can access.”  This is file-level access, showing what file/folder was requested and with what access rights (read, write, etc.)
-           - SMB logon activity (4624 Type 3 from attacker IP)
-   **🔎Investigation:**
-           - Correlate SMB activity with logon activity and build a timeline. When did the activity start? which account was used? Were there any failed logons? which source IPs were involved? Which files/folders were accessed successfully?
-          - Unexpected logons to admin shares like `ADMIN$, C$`
-          - SMB access without corresponding interactive logon
-          - A single IP accessing multiple machines (lateral movement pattern)
+**📌Attack Step:** Accessing an open SMB share (\\target\backups), pulling prod.dtsconfig  
+   **🛡️Detection:**  
+           - Event ID 5140: “A network share object was accessed." A user (or process) accessed a share (e.g., \\host\backups), not necessarily a specific file.   
+           - Event ID 5145: “A network share object was checked to see whether client can access.”  This is file-level access, showing what file/folder was requested and with what access rights (read, write, etc.)  
+           - SMB logon activity (4624 Type 3 from attacker IP)  
+   **🔎Investigation:**  
+           - Correlate SMB activity with logon activity and build a timeline. When did the activity start? which account was used? Were there any failed logons? which source IPs were involved? Which files/folders were accessed successfully?  
+          - Unexpected logons to admin shares like `ADMIN$, C$`  
+          - SMB access without corresponding interactive logon  
+          - A single IP accessing multiple machines (lateral movement pattern)  
 
 **3. Credential Access**  
 **📌Attack Step:** Extracting creds in plaintext from prod.dtsconfig
